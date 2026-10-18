@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive Design Portfolio by Halimah Alossaimi.">
+  <title>Halimah Alossaimi — Interactive Design Portfolio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="wordmark" href="index.html">Halimah Alossaimi</a>
+    <nav aria-label="Primary navigation">
+      <a href="#work">Work</a>
+      <a href="album-cover.html">Album Cover</a>
+      <a href="dog-park.html">3D Environment</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero shell">
+      <p class="eyebrow">Industrial Design · Arizona State University</p>
+      <h1>Interactive Design Portfolio</h1>
+      <p class="hero-copy">A collection of visual experiments in storytelling, atmosphere, and human-centered design.</p>
+    </section>
+
+    <section class="flower-section shell" aria-labelledby="flower-title">
+      <div class="section-heading compact-heading">
+        <div>
+          <p class="eyebrow">Interactive artwork</p>
+          <h2 id="flower-title">Grow a small garden</h2>
+        </div>
+        <p class="instruction">Click or tap to add a flower.</p>
+      </div>
+      <div id="flower-field" class="flower-field" role="application" tabindex="0" aria-label="Interactive drawing area. Click, tap, or press Enter to add a flower.">
+        <div class="field-note" aria-hidden="true">Your garden begins here</div>
+      </div>
+    </section>
+
+    <section id="work" class="work-section shell" aria-labelledby="work-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Selected work</p>
+          <h2 id="work-title">Two experiments, two environments</h2>
+        </div>
+      </div>
+      <div class="project-grid">
+        <a class="project-card" href="album-cover.html">
+          <figure class="project-image square">
+            <img src="assets/on-my-way-final.webp" alt="On My Way album cover with a pink sunset, dashboard, and white title lettering.">
+          </figure>
+          <div class="project-meta">
+            <div>
+              <p class="project-type">Album cover · 2026</p>
+              <h3>On My Way</h3>
+            </div>
+            <span aria-hidden="true">↗</span>
+          </div>
+        </a>
+
+        <a class="project-card" href="dog-park.html">
+          <figure class="project-image landscape">
+            <img src="assets/dogpark-final-wide.webp" alt="Biophilic indoor dog park with a central water area, walking paths, trees, and seating.">
+          </figure>
+          <div class="project-meta">
+            <div>
+              <p class="project-type">3D environment · 2026</p>
+              <h3>Future Indoor Dog Park</h3>
+            </div>
+            <span aria-hidden="true">↗</span>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer shell">
+    <p>Designed by Halimah Alossaimi</p>
+    <a href="#top">Back to top ↑</a>
+  </footer>
+  <script src="flowers.js"></script>
+</body>
+</html>
