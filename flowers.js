@@ -1,69 +1,47 @@
 const field = document.querySelector('#flower-field');
 
 if (field) {
-  const profiles = [
-    { name: 'rounded', minPetals: 6, maxPetals: 9, width: .62, height: 1 },
-    { name: 'pointed', minPetals: 7, maxPetals: 11, width: .5, height: 1.08 },
-    { name: 'lobed', minPetals: 5, maxPetals: 8, width: .76, height: .9 },
-    { name: 'narrow', minPetals: 9, maxPetals: 13, width: .34, height: 1.12 }
-  ];
-  const hues = [18, 38, 54, 108, 154, 194, 218, 264, 314, 344];
-  let lastProfile = -1;
-  let lastHue = -1;
-
-  const differentIndex = (length, previous) => {
-    if (length < 2) return 0;
-    let next = Math.floor(Math.random() * length);
-    while (next === previous) next = Math.floor(Math.random() * length);
+  const colors = ['#679d79', '#4b9989', '#a8ba66', '#d493b5', '#aa8ac7', '#e4a45d'];
+  let lastColor = -1;
+  let lastShape = -1;
+  const choose = (length, previous) => {
+    let next;
+    do { next = Math.floor(Math.random() * length); } while (next === previous);
     return next;
   };
-
-  function plantFlower(x, y) {
-    const profileIndex = differentIndex(profiles.length, lastProfile);
-    const hueIndex = differentIndex(hues.length, lastHue);
-    lastProfile = profileIndex;
-    lastHue = hueIndex;
-
-    const profile = profiles[profileIndex];
-    const hue = hues[hueIndex] + Math.round(Math.random() * 12 - 6);
-    const size = Math.round(50 + Math.random() * 78);
-    const petals = Math.round(profile.minPetals + Math.random() * (profile.maxPetals - profile.minPetals));
-    const rotation = Math.random() * 360;
-    const flower = document.createElement('span');
-    flower.className = `flower ${profile.name}`;
-    flower.style.left = `${x}px`;
-    flower.style.top = `${y}px`;
-    flower.style.setProperty('--hue', hue);
-    flower.style.setProperty('--center-hue', (hue + 42) % 360);
-    flower.style.setProperty('--center', `${Math.max(14, size * .22)}px`);
-    flower.style.setProperty('--pw', `${size * profile.width}px`);
-    flower.style.setProperty('--ph', `${size * .55 * profile.height}px`);
-
-    for (let i = 0; i < petals; i += 1) {
-      const petal = document.createElement('span');
-      petal.className = 'petal';
-      const angle = rotation + (360 / petals) * i;
-      petal.style.transform = `rotate(${angle}deg) translateY(${-size * .08}px)`;
-      flower.appendChild(petal);
-    }
-
-    const center = document.createElement('span');
-    center.className = 'flower-center';
-    flower.appendChild(center);
-    field.appendChild(flower);
+  function plantTree(x, y) {
+    const colorIndex = choose(colors.length, lastColor);
+    const shape = choose(4, lastShape);
+    lastColor = colorIndex;
+    lastShape = shape;
+    const crowns = [
+      '<circle cx="50" cy="37" r="30"/>',
+      '<path d="M50 5 77 40H65L85 66H15L35 40H23Z"/>',
+      '<ellipse cx="50" cy="38" rx="24" ry="34"/>',
+      '<path d="M24 65C3 57 10 35 23 31C14 11 40 0 50 12C66-2 90 14 78 31C98 41 89 65 73 66Z"/>'
+    ];
+    const size = Math.round(66 + Math.random() * 48);
+    const tree = document.createElement('span');
+    tree.className = 'planted-tree';
+    tree.setAttribute('aria-hidden', 'true');
+    tree.style.left = x + 'px';
+    tree.style.top = y + 'px';
+    tree.style.width = size + 'px';
+    tree.innerHTML = '<svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="103" rx="24" ry="5" fill="#302047" opacity=".12"/><path d="M46 100V43h8v57Z" fill="#805943"/><g fill="' + colors[colorIndex] + '" stroke="#302047" stroke-opacity=".12" stroke-width="2">' + crowns[shape] + '</g><path d="M50 96V42m0 31L37 60m13 2 12-12" fill="none" stroke="#805943" stroke-width="4" stroke-linecap="round"/></svg>';
+    field.appendChild(tree);
+    const note = field.querySelector('.field-note');
+    if (note) note.hidden = true;
   }
-
   field.addEventListener('pointerdown', (event) => {
     if (event.button !== undefined && event.button !== 0) return;
     const rect = field.getBoundingClientRect();
-    plantFlower(event.clientX - rect.left, event.clientY - rect.top);
+    plantTree(event.clientX - rect.left, event.clientY - rect.top);
   });
-
   field.addEventListener('keydown', (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       const rect = field.getBoundingClientRect();
-      plantFlower(rect.width / 2, rect.height / 2);
+      plantTree(rect.width * (.15 + Math.random() * .7), rect.height * (.2 + Math.random() * .6));
     }
   });
 }
