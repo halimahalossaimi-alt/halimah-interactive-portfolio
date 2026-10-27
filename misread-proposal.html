@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="MISREAD: a web game proposal about AI hallucination by Halimah Alossaimi.">
+  <title>MISREAD — Web Game Proposal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body id="top" class="proposal-page">
+  <header class="site-header">
+    <a class="wordmark" href="index.html">Halimah Alossaimi</a>
+    <nav aria-label="Primary navigation">
+      <a href="index.html">Home</a>
+      <a href="album-cover.html">Album Cover</a>
+      <a href="dog-park.html">3D Environment</a>
+      <a aria-current="page" href="misread-proposal.html">Game Proposal</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="proposal-hero shell">
+      <div class="proposal-title-block">
+        <p class="eyebrow">Hallucination · Week 1 proposal</p>
+        <h1>MIS<span>READ</span></h1>
+        <p class="proposal-tagline">When the system names the wrong thing, reality starts to agree.</p>
+      </div>
+      <div class="misread-visual" aria-label="Concept image showing the word cup being misread as lamp">
+        <div class="system-bar"><span>VISUAL ARCHIVE 03</span><span class="pulse-dot">LIVE</span></div>
+        <div class="scan-object">
+          <div class="object-cup"><i></i></div>
+          <span class="scan-line"></span>
+        </div>
+        <div class="system-result">
+          <small>OBJECT IDENTIFIED</small>
+          <strong data-label>TABLE LAMP</strong>
+          <span>CONFIDENCE 98%</span>
+        </div>
+        <div class="visual-actions" aria-hidden="true"><span>TRUST LABEL</span><span>CHALLENGE IT</span></div>
+      </div>
+      <p class="hero-experience">The player works as a visual auditor inside a damaged digital archive. An AI assistant labels everyday drawings. At first it is accurate. Then it becomes confidently wrong, and the images begin changing to match its mistakes. The player must observe carefully, challenge false labels, and protect the original record.</p>
+    </section>
+
+    <nav class="proposal-index shell" aria-label="Proposal sections">
+      <a href="#case-study">01 Case study</a><a href="#discussion">02 AI discussion</a><a href="#concept">03 Concept</a><a href="#journey">04 Journey</a><a href="#style">05 Style + sound</a><a href="#plan">06 Build plan</a>
+    </nav>
+
+    <section id="case-study" class="proposal-section shell">
+      <div class="proposal-section-head"><p class="section-number">01</p><div><p class="eyebrow">Played case study</p><h2>Quick, Draw!</h2></div></div>
+      <div class="case-study-lead">
+        <div class="case-study-mark" aria-hidden="true"><span>20</span><small>SECONDS</small><div class="scribble">⌁</div></div>
+        <div class="body-copy">
+          <p><strong>Quick, Draw!</strong> is a browser game in which a neural network tries to recognize a player’s doodle before a 20-second timer ends. The project was created by Jonas Jongejan, Henry Rowley, Takashi Kawashima, Jongmin Kim, Nick Fox-Gieg, and collaborators at Google Creative Lab and the Data Arts Team.</p>
+          <p>The project later became a public dataset of 50 million drawings in 345 categories. That scale matters because the game turns many different human ways of drawing the same object into training material.</p>
+          <div class="source-links"><a href="https://quickdraw.withgoogle.com/" target="_blank" rel="noreferrer">Play Quick, Draw! ↗</a><a href="https://experiments.withgoogle.com/quick-draw" target="_blank" rel="noreferrer">Creator credits ↗</a><a href="https://github.com/googlecreativelab/quickdraw-dataset" target="_blank" rel="noreferrer">Dataset source ↗</a></div>
+        </div>
+      </div>
+
+      <div class="proposal-subsection">
+        <h3>Three meaningful moments</h3>
+        <div class="moment-grid">
+          <article><span>01</span><h4>The timer starts</h4><p>The prompt and countdown create pressure immediately. There is almost no learning period.</p></article>
+          <article><span>02</span><h4>The machine guesses aloud</h4><p>Rapid guesses make the model feel present. Wrong guesses reveal how differently a person and a system can read the same lines.</p></article>
+          <article><span>03</span><h4>The results reveal patterns</h4><p>After the rounds, the player can compare a drawing with other examples. A private doodle becomes part of a larger visual language.</p></article>
+        </div>
+      </div>
+
+      <div class="proposal-subsection">
+        <h3>Player-action events</h3>
+        <ol class="event-list">
+          <li><span>01</span>Start the game.</li><li><span>02</span>Read the drawing prompt.</li><li><span>03</span>Draw with the pointer or finger while the timer runs.</li><li><span>04</span>React to the network’s changing guesses.</li><li><span>05</span>Continue after a correct guess or timeout.</li><li><span>06</span>Repeat the cycle across six prompts.</li><li><span>07</span>Open a result to compare the doodle with similar drawings.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="discussion" class="proposal-section shell discussion-section">
+      <div class="proposal-section-head"><p class="section-number">02</p><div><p class="eyebrow">Critical discussion with AI</p><h2>What the first analysis missed</h2></div></div>
+      <div class="evidence-grid">
+        <article class="evidence-card"><p class="eyebrow">Verified research</p><h3>The game is a data-collection system too.</h3><p>The official dataset documents 50 million drawings across 345 categories. Drawings include time-based stroke data and metadata such as whether the game recognized them.</p></article>
+        <article class="evidence-card"><p class="eyebrow">Gap 01</p><h3>Wrong guesses are part of the experience.</h3><p>The first AI analysis focused on speed and successful recognition. It missed that incorrect guesses are the moment when players notice the model’s limits.</p></article>
+        <article class="evidence-card"><p class="eyebrow">Gap 02</p><h3>Learning was described too casually.</h3><p>The AI implied that one player’s session changes the model immediately. The official sources describe contributed drawings and a growing dataset, but they do not confirm a personal real-time update.</p></article>
+      </div>
+      <div class="exchange">
+        <div class="exchange-line ai-line"><span>AI</span><p>“The strongest lesson is that fast feedback makes the system feel intelligent.”</p></div>
+        <div class="exchange-line me-line"><span>ME</span><p>That is only half of it. The wrong guesses are more interesting because they expose the gap between what I drew and what the system believes.</p></div>
+        <div class="exchange-line ai-line"><span>AI</span><p>“Then incorrect labels could work as failure states.”</p></div>
+        <div class="exchange-line me-line"><span>ME</span><p>I do not want them to feel like simple failures. In my game, a wrong label changes the world and asks the player to defend their own observation.</p></div>
+      </div>
+      <div class="decision-callout"><p class="eyebrow">My conclusion + design decision</p><p>Hallucination becomes meaningful when a confident mistake affects what the player sees next. MISREAD will turn wrong labels into visual changes. The player’s main skill is careful observation, not speed.</p></div>
+    </section>
+
+    <section id="concept" class="proposal-section shell">
+      <div class="proposal-section-head"><p class="section-number">03</p><div><p class="eyebrow">Narrative and concept</p><h2>A mistake that edits reality</h2></div></div>
+      <div class="concept-grid">
+        <article><p class="eyebrow">Hallucination</p><h3>Confident false perception</h3><p>I interpret hallucination as a system seeing something that is not there, then presenting the mistake with enough confidence that other people may accept it.</p></article>
+        <article><p class="eyebrow">Game world</p><h3>A damaged visual archive</h3><p>The archive stores simple drawings of everyday objects. Its automated labeler is failing, and each false label slowly rewrites the stored image.</p></article>
+        <article><p class="eyebrow">Player role</p><h3>The last visual auditor</h3><p>The player compares the original evidence with the AI label, challenges mistakes, and restores the record before it disappears.</p></article>
+        <article><p class="eyebrow">Desired experience</p><h3>Calm → doubt → agency</h3><p>The game begins clean and understandable. It becomes uncertain, then ends by showing that the player can question a convincing system.</p></article>
+      </div>
+    </section>
+
+    <section id="journey" class="proposal-section shell">
+      <div class="proposal-section-head"><p class="section-number">04</p><div><p class="eyebrow">Interaction and player journey</p><h2>Observe. Decide. Protect the record.</h2></div></div>
+      <div class="flowchart" role="img" aria-label="Game flow from calibration through three stages to the ending">
+        <div><small>OPENING</small><strong>Calibrate</strong><p>Learn trust and challenge</p></div><i>→</i><div><small>STAGE 01</small><strong>Clear</strong><p>Mostly accurate labels</p></div><i>→</i><div><small>STAGE 02</small><strong>Uncertain</strong><p>Ambiguous evidence</p></div><i>→</i><div><small>STAGE 03</small><strong>Corrupted</strong><p>Images begin changing</p></div><i>→</i><div><small>ENDING</small><strong>Audit</strong><p>See what you protected</p></div>
+      </div>
+      <div class="storyboard" aria-label="Five-panel storyboard">
+        <figure><div class="story-frame frame-one"><span>CALIBRATION</span><b>THIS IS A CUP</b><em>✓</em></div><figcaption>1 · The system teaches the basic choice.</figcaption></figure>
+        <figure><div class="story-frame frame-two"><span>OBJECT 04</span><b>CUP?</b><em>98%</em></div><figcaption>2 · A familiar image receives a confident label.</figcaption></figure>
+        <figure><div class="story-frame frame-three"><span>CONTRADICTION</span><b>LAMP</b><em>!</em></div><figcaption>3 · The label conflicts with the player’s observation.</figcaption></figure>
+        <figure><div class="story-frame frame-four"><span>ARCHIVE SHIFT</span><b>CUP / LAMP</b><em>≠</em></div><figcaption>4 · The image distorts toward the wrong label.</figcaption></figure>
+        <figure><div class="story-frame frame-five"><span>AUDIT COMPLETE</span><b>YOU CHALLENGED 4</b><em>◎</em></div><figcaption>5 · The ending reflects the player’s choices.</figcaption></figure>
+      </div>
+      <div class="controls-row"><span><b>OBSERVE</b> Read the drawing</span><span><b>TRUST</b> Accept the label</span><span><b>CHALLENGE</b> Protect the original</span><span><b>COMPARE</b> Review both versions</span></div>
+    </section>
+
+    <section id="style" class="proposal-section shell">
+      <div class="proposal-section-head"><p class="section-number">05</p><div><p class="eyebrow">Style and sound guide</p><h2>Friendly interface, unstable evidence</h2></div></div>
+      <div class="style-grid">
+        <article class="palette-card"><h3>Color</h3><div class="swatches"><span style="--swatch:#fff8ef">Archive</span><span style="--swatch:#68459b">System</span><span style="--swatch:#f7cb55">Confidence</span><span style="--swatch:#e78360">Conflict</span><span style="--swatch:#83ba9e">Verified</span></div><p>The colors begin soft and organized. Coral appears when the image and label disagree.</p></article>
+        <article><h3>Interface</h3><div class="type-sample"><span>SYSTEM / 98%</span><strong>Is this what you saw?</strong><p>Avenir-style sans serif keeps the page connected to the portfolio. Monospaced labels separate the system voice from the player’s voice.</p></div></article>
+        <article><h3>Motion</h3><div class="motion-sample"><span>CUP</span><span>LAMP</span><i></i></div><p>Labels drift out of alignment, duplicate, and settle into the wrong word. Motion stays short so the player can still study the evidence.</p></article>
+        <article><h3>Sound</h3><ul class="sound-list"><li><b>Soft click</b> — choice accepted</li><li><b>Two-note detune</b> — contradiction</li><li><b>Low archive hum</b> — rising uncertainty</li><li><b>Pencil texture</b> — visual evidence appears</li></ul><p>The browser will generate simple tones. The spoken, immediate feedback of Quick, Draw! is the main interaction reference.</p></article>
+      </div>
+      <div class="reference-strip"><p><strong>Reference 01:</strong> <a href="https://quickdraw.withgoogle.com/" target="_blank" rel="noreferrer">Quick, Draw! by Google Creative Lab</a> — rapid prompts, minimal drawing surface, and immediate machine feedback.</p><p><strong>Reference 02:</strong> <a href="https://quickdraw.withgoogle.com/data" target="_blank" rel="noreferrer">The Quick, Draw! Data</a> — grids of varied human drawings inspired the visual-archive setting.</p><p><strong>Original visuals:</strong> Interface mockups, flowchart, storyboard, and object icons on this page were created for MISREAD.</p></div>
+    </section>
+
+    <section id="plan" class="proposal-section shell plan-section">
+      <div class="proposal-section-head"><p class="section-number">06</p><div><p class="eyebrow">Two-week build plan</p><h2>Small enough to finish, clear enough to test</h2></div></div>
+      <div class="week-grid">
+        <article><span>WEEK 2</span><h3>Build the playable prototype</h3><ul><li>Create the opening and three short stages.</li><li>Build the drawing-card and label system.</li><li>Add Trust and Challenge choices.</li><li>Track decisions and show an ending.</li><li>Add responsive controls, motion, and simple browser-generated sound.</li></ul><p><strong>Prototype goal:</strong> one complete 3–5 minute playthrough.</p></article>
+        <article><span>WEEK 3</span><h3>Test, refine, and publish</h3><ul><li>Test with at least three people.</li><li>Check whether the goal and choices are understandable.</li><li>Adjust pacing, label confidence, and visual distortion.</li><li>Check phone layout, keyboard use, contrast, and reduced motion.</li><li>Fix bugs and publish the final game from this portfolio.</li></ul><p><strong>Testing question:</strong> When did you stop trusting the system, and why?</p></article>
+      </div>
+    </section>
+
+    <nav class="project-next shell" aria-label="Project navigation"><a href="index.html#work">← All projects</a><a href="#top">Back to top ↑</a></nav>
+  </main>
+  <footer class="site-footer shell"><p>Game proposal by Halimah Alossaimi · 2026</p><a href="https://quickdraw.withgoogle.com/" target="_blank" rel="noreferrer">Case study source ↗</a></footer>
+</body>
+</html>
