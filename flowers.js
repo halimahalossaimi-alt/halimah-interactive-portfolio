@@ -20,7 +20,7 @@ if (field) {
       '<ellipse cx="50" cy="38" rx="24" ry="34"/>',
       '<path d="M24 65C3 57 10 35 23 31C14 11 40 0 50 12C66-2 90 14 78 31C98 41 89 65 73 66Z"/>'
     ];
-    const size = Math.round(66 + Math.random() * 48);
+    const size = Math.round(32 + Math.random() * 28);
     const tree = document.createElement('span');
     tree.className = 'planted-tree';
     tree.setAttribute('aria-hidden', 'true');
