@@ -642,6 +642,7 @@ h1,h2,h3 { font-family: Arial, "Helvetica Neue", sans-serif; letter-spacing: -.0
 }
 .field-note { color: rgba(194,202,187,.6); font-family:"Courier New",monospace; }
 .planted-tree {
+  animation: none !important;
   position: absolute;
   z-index: 2;
   display: block;
