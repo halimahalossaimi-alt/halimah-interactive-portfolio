@@ -780,8 +780,7 @@ figcaption { color: var(--muted); font-family:"Courier New",monospace; text-tran
 .swatches span { border-radius:0; border-color:var(--ink); }
 .role-interface { border-radius:0; }
 
-.has-js .reveal { opacity:0; transform:translateY(34px); transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1); }
-.has-js .reveal.is-visible { opacity:1; transform:none; }
+.has-js .reveal { opacity:1; transform:none; }
 .cursor-halo {
   --cursor-x: -100px;
   --cursor-y: -100px;
