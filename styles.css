@@ -641,6 +641,17 @@ h1,h2,h3 { font-family: Arial, "Helvetica Neue", sans-serif; letter-spacing: -.0
   background-size: auto,48px 48px,48px 48px,auto;
 }
 .field-note { color: rgba(194,202,187,.6); font-family:"Courier New",monospace; }
+.planted-tree {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  height: auto;
+  pointer-events: none;
+  transform: translate(-50%,-100%);
+  transform-origin: 50% 100%;
+  animation: bloom .42s cubic-bezier(.2,.9,.25,1.25) both;
+}
+.planted-tree svg { display:block; width:100%; height:auto; }
 
 .work-section { padding-top: clamp(120px,15vw,220px); }
 .work-section .section-heading { margin-bottom: 70px; padding-bottom: 22px; border-bottom: 1px solid var(--ink); }
