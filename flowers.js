@@ -27,7 +27,7 @@ if (field) {
     tree.style.left = x + 'px';
     tree.style.top = y + 'px';
     tree.style.width = size + 'px';
-    tree.innerHTML = '<svg viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="103" rx="24" ry="5" fill="#302047" opacity=".12"/><path d="M46 100V43h8v57Z" fill="#805943"/><g fill="' + colors[colorIndex] + '" stroke="#302047" stroke-opacity=".12" stroke-width="2">' + crowns[shape] + '</g><path d="M50 96V42m0 31L37 60m13 2 12-12" fill="none" stroke="#805943" stroke-width="4" stroke-linecap="round"/></svg>';
+    tree.innerHTML = '<svg width="' + size + '" height="' + Math.round(size * 1.1) + '" style="display:block;max-width:' + size + 'px" viewBox="0 0 100 110" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="103" rx="24" ry="5" fill="#302047" opacity=".12"/><path d="M46 100V43h8v57Z" fill="#805943"/><g fill="' + colors[colorIndex] + '" stroke="#302047" stroke-opacity=".12" stroke-width="2">' + crowns[shape] + '</g><path d="M50 96V42m0 31L37 60m13 2 12-12" fill="none" stroke="#805943" stroke-width="4" stroke-linecap="round"/></svg>';
     field.appendChild(tree);
     const note = field.querySelector('.field-note');
     if (note) note.hidden = true;
