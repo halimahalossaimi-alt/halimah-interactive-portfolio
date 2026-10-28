@@ -629,7 +629,8 @@ h1,h2,h3 { font-family: Arial, "Helvetica Neue", sans-serif; letter-spacing: -.0
   text-transform: uppercase;
 }
 .flower-field {
-  min-height: min(68vh,720px);
+  min-height: clamp(280px,30vw,420px);
+  aspect-ratio: 16 / 5;
   border: 1px solid rgba(194,202,187,.55);
   border-radius: 0;
   background:
@@ -816,7 +817,7 @@ figcaption { color: var(--muted); font-family:"Courier New",monospace; text-tran
   .hero::before { width:78vw; opacity:.82; }
   .hero::after { white-space:normal; line-height:1.8; }
   .flower-section { padding:28px 18px; }
-  .flower-field { min-height:540px; }
+  .flower-field { min-height:260px; aspect-ratio:16 / 7; }
   .work-section .section-heading h2 { font-size:clamp(3rem,13vw,5.5rem); }
   .project-meta { min-height:250px; padding:28px 22px; }
   .project-intro h1 { font-size:clamp(4.5rem,19vw,7.5rem); }
