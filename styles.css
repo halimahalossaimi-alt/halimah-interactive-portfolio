@@ -67,7 +67,7 @@ h1, h2, h3 { margin: 0; letter-spacing: -0.045em; line-height: 0.98; }
 }
 .flower-field:focus-visible { outline: 3px solid var(--blue); outline-offset: 4px; }
 .field-note { position: absolute; left: 24px; bottom: 18px; color: #778079; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
-.flower { position: absolute; width: 1px; height: 1px; pointer-events: none; animation: bloom .42s cubic-bezier(.2,.9,.25,1.25) both; }
+.flower { position: absolute; width: 1px; height: 1px; pointer-events: none; animation: none; }
 .petal { position: absolute; left: 50%; top: 50%; width: var(--pw); height: var(--ph); margin-left: calc(var(--pw) / -2); margin-top: calc(var(--ph) * -1); transform-origin: 50% 100%; background: hsl(var(--hue) 72% 66% / .92); border: 1px solid hsl(var(--hue) 45% 48% / .32); }
 .flower.rounded .petal { border-radius: 55% 55% 45% 45%; }
 .flower.pointed .petal { border-radius: 75% 12% 75% 18%; }
