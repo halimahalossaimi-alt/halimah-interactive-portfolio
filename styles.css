@@ -842,3 +842,27 @@ figcaption { color: var(--muted); font-family:"Courier New",monospace; text-tran
   .cursor-halo { display:none; }
   .hero::before { transition:none; }
 }
+
+
+/* Album images keep their full composition and original proportions */
+.album-page .album-feature {
+  width: min(100%, 760px);
+  margin-inline: auto;
+}
+.album-page .album-feature img {
+  width: 100%;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+}
+.album-page .wide-media {
+  width: min(100%, 1180px);
+  margin-inline: auto;
+}
+.album-page .wide-media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+}
