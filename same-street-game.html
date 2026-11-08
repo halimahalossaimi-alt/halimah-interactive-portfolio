@@ -136,7 +136,7 @@
     var roleEl=document.getElementById('role'),goalEl=document.getElementById('goal'),livesEl=document.getElementById('lives'),progressEl=document.getElementById('progress');
     var message=document.getElementById('message'),status=document.getElementById('status'),soundBtn=document.getElementById('sound');
     var W=960,H=540,ground=418,state='intro',mode='human',muted=false,last=0,elapsed=0,road=0,spawn=0,progress=0,shake=0,flash=0;
-    var duration={human:20,zombie:18,glitch:14};
+    var duration={human:15,zombie:14,glitch:10};
     var player={x:175,y:ground-58,w:34,h:58,vy:0,onGround:true,lives:3};
     var obstacles=[],particles=[],audio=null;
 
@@ -191,8 +191,8 @@
     function hit(ob){
       if(ob.hit)return;ob.hit=true;player.lives--;shake=10;flash=.16;tone(72,.16,'sawtooth');
       if(mode==='zombie')progress=Math.max(0,progress-12);
-      announce(player.lives>0?'Obstacle hit. Keep moving.':'The street resets.');
-      if(player.lives<=0)setTimeout(function(){begin(mode)},650);
+      announce(player.lives>0?'Obstacle hit. Keep moving.':'The street flickers, but the loop continues.');
+      if(player.lives<=0)player.lives=3;
       updateHUD();
     }
 
