@@ -160,7 +160,7 @@
     var W=960,H=540,ground=418,state='intro',mode='human',muted=false,last=0,elapsed=0,road=0,spawn=0,progress=0,score=0,shake=0,flash=0;
     var duration={human:15,zombie:14,glitch:10};
     var player={x:175,y:ground-58,w:34,h:58,vy:0,onGround:true,lives:3};
-    var obstacles=[],particles=[],audio=null;
+    var obstacles=[],particles=[],audio=null,musicTimer=null,musicStep=0;
 
     function setCard(kind){
       screen.hidden=false;
@@ -191,7 +191,7 @@
 
     function begin(next){
       if(next==='human')score=0;
-      mode=next;state='playing';screen.hidden=true;pausePanel.hidden=true;pauseBtn.textContent='Pause';elapsed=0;road=0;spawn=.8;progress=0;obstacles=[];particles=[];player.y=ground-player.h;player.vy=0;player.onGround=true;player.lives=3;last=performance.now();updateHUD();announce(next==='human'?'Human loop started. Escape the zombies.':next==='zombie'?'Zombie loop started. Chase the human.':'Final loop started. Your role will keep changing.');tone(220,.08,'sine');
+      mode=next;state='playing';screen.hidden=true;pausePanel.hidden=true;pauseBtn.textContent='Pause';elapsed=0;road=0;spawn=.8;progress=0;obstacles=[];particles=[];player.y=ground-player.h;player.vy=0;player.onGround=true;player.lives=3;last=performance.now();updateHUD();announce(next==='human'?'Human loop started. Escape the zombies.':next==='zombie'?'Zombie loop started. Chase the human.':'Final loop started. Your role will keep changing.');tone(220,.08,'sine',.035);startMusic();
     }
 
     function updateHUD(){
@@ -222,17 +222,44 @@
     }
 
     function finish(){
-      state='between';pausePanel.hidden=true;pauseBtn.textContent='Pause';tone(520,.12,'sine');setTimeout(function(){
+      state='between';stopMusic();pausePanel.hidden=true;pauseBtn.textContent='Pause';tone(520,.12,'sine',.04);setTimeout(function(){
         if(mode==='human')setCard('zombie');else if(mode==='zombie')setCard('glitch');else setCard('ending');
       },350);
     }
 
-    function tone(freq,len,type){
+    function tone(freq,len,type,gain){
       if(muted)return;
       try{
         audio=audio||new (window.AudioContext||window.webkitAudioContext)();
-        var o=audio.createOscillator(),g=audio.createGain();o.type=type||'sine';o.frequency.value=freq;g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+len);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+len);
+        if(audio.state==='suspended')audio.resume();
+        var o=audio.createOscillator(),g=audio.createGain();o.type=type||'sine';o.frequency.value=freq;g.gain.setValueAtTime(gain||.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+len);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+len);
       }catch(e){}
+    }
+
+    function stopMusic(){
+      if(musicTimer){clearInterval(musicTimer);musicTimer=null}
+    }
+
+    function musicBeat(){
+      if(muted||state!=='playing')return;
+      var active=mode==='glitch'?(Math.floor(elapsed/2.4)%2===0?'human':'zombie'):mode;
+      if(active==='human'){
+        var humanNotes=[82,110,82,164];
+        tone(humanNotes[musicStep%humanNotes.length],.16,musicStep%2===0?'sine':'triangle',.018);
+        if(musicStep%4===0)tone(46,.12,'sine',.026);
+      }else{
+        var zombieNotes=[116,146,174,130,196,146];
+        tone(zombieNotes[musicStep%zombieNotes.length],.11,musicStep%2===0?'sawtooth':'square',.017);
+        if(musicStep%3===0)tone(58,.1,'square',.025);
+      }
+      musicStep++;
+    }
+
+    function startMusic(){
+      stopMusic();musicStep=0;
+      if(muted||state!=='playing')return;
+      musicBeat();
+      musicTimer=setInterval(musicBeat,mode==='human'?520:mode==='zombie'?300:380);
     }
 
     function spawnObstacle(){
@@ -261,7 +288,7 @@
 
     function palette(){
       var m=mode;if(mode==='glitch')m=Math.floor(elapsed/2.4)%2===0?'human':'zombie';
-      return m==='human'?{sky:'#f4b58e',far:'#d88983',near:'#6f6b86',ground:'#302f46',accent:'#f7e4c9',role:'human'}:{sky:'#9bd35b',far:'#7151a4',near:'#ff704d',ground:'#24173d',accent:'#fff06a',role:'zombie'};
+      return m==='human'?{sky:'#f4b58e',far:'#d88983',near:'#6f6b86',ground:'#302f46',accent:'#f7e4c9',role:'human'}:{sky:'#dce8b8',far:'#65508d',near:'#e96549',ground:'#24173d',accent:'#fff06a',role:'zombie'};
     }
 
     function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h)}
@@ -331,9 +358,9 @@
 
     function togglePause(){
       if(state==='playing'){
-        state='paused';pausePanel.hidden=false;pauseBtn.textContent='Resume';announce('Game paused.');
+        state='paused';stopMusic();pausePanel.hidden=false;pauseBtn.textContent='Resume';announce('Game paused.');
       }else if(state==='paused'){
-        state='playing';pausePanel.hidden=true;pauseBtn.textContent='Pause';last=performance.now();announce('Game resumed.');
+        state='playing';pausePanel.hidden=true;pauseBtn.textContent='Pause';last=performance.now();startMusic();announce('Game resumed.');
       }
     }
     function restartRun(){begin('human');announce('Full run restarted. Score reset.')}
@@ -345,7 +372,10 @@
     canvas.addEventListener('pointerdown',jump);document.getElementById('jump').addEventListener('pointerdown',function(e){e.preventDefault();jump()});
     pauseBtn.addEventListener('click',togglePause);resumeBtn.addEventListener('click',togglePause);
     restartBtn.addEventListener('click',restartRun);pauseRestartBtn.addEventListener('click',restartRun);
-    soundBtn.addEventListener('click',function(){muted=!muted;soundBtn.textContent='Sound: '+(muted?'Off':'On');soundBtn.setAttribute('aria-pressed',muted?'true':'false');if(!muted)tone(440,.06,'sine')});
+    soundBtn.addEventListener('click',function(){
+      muted=!muted;soundBtn.textContent='Sound: '+(muted?'Off':'On');soundBtn.setAttribute('aria-pressed',muted?'true':'false');
+      if(muted)stopMusic();else{tone(440,.06,'sine',.03);if(state==='playing')startMusic()}
+    });
     setCard('intro');requestAnimationFrame(loop);
   })();
   </script>
