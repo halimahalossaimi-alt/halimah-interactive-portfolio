@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Play Same Street, a cozy-horror looping runner by Halimah Alossaimi.">
+  <title>Same Street — Playable Game Draft</title>
+  <style>
+    :root{--ink:#10120f;--sage:#c2cabb;--lime:#d8ff52;--cream:#f5f2e8;--line:rgba(16,18,15,.28)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--sage);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+    a{color:inherit}
+    .site-header{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px clamp(18px,4vw,64px);border-bottom:1px solid var(--line);text-transform:uppercase;font-size:.76rem;letter-spacing:.11em}
+    .wordmark{font-weight:800;text-decoration:none}
+    .site-header nav{display:flex;gap:18px;flex-wrap:wrap;justify-content:flex-end}
+    .site-header nav a{text-decoration:none}
+    main{width:min(1180px,calc(100% - 28px));margin:0 auto;padding:42px 0 72px}
+    .eyebrow{margin:0 0 10px;text-transform:uppercase;letter-spacing:.14em;font-size:.72rem;font-weight:800}
+    .intro{display:grid;grid-template-columns:1fr auto;align-items:end;gap:30px;margin-bottom:22px}
+    h1{font-size:clamp(3.4rem,10vw,8.8rem);line-height:.74;letter-spacing:-.08em;margin:0;text-transform:uppercase}
+    h1 span{color:transparent;-webkit-text-stroke:2px var(--ink)}
+    .intro-copy{max-width:430px;font-size:1rem;line-height:1.55;margin:0}
+    .game-shell{background:var(--ink);border:1px solid var(--ink);position:relative;overflow:hidden;box-shadow:14px 14px 0 rgba(16,18,15,.12)}
+    .game-topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--cream);padding:10px 14px;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em}
+    .hud-group{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+    .hud-value{color:var(--lime);font-weight:800}
+    button{font:inherit}
+    .sound-button{border:1px solid rgba(245,242,232,.5);background:transparent;color:var(--cream);padding:7px 10px;text-transform:uppercase;font-size:.68rem;letter-spacing:.08em;cursor:pointer}
+    .stage{position:relative;aspect-ratio:16/9;background:#f6bc92;overflow:hidden;isolation:isolate}
+    canvas{display:block;width:100%;height:100%;touch-action:none}
+    .screen{position:absolute;inset:0;display:grid;place-items:center;padding:22px;background:rgba(16,18,15,.68);backdrop-filter:blur(8px);z-index:4}
+    .screen[hidden]{display:none}
+    .card{width:min(580px,100%);background:var(--cream);border:2px solid var(--ink);padding:clamp(20px,5vw,42px);box-shadow:10px 10px 0 var(--lime)}
+    .card .loop-label{text-transform:uppercase;font-size:.7rem;letter-spacing:.14em;font-weight:800}
+    .card h2{font-size:clamp(2rem,7vw,4.8rem);line-height:.85;letter-spacing:-.055em;text-transform:uppercase;margin:10px 0 16px}
+    .card p{line-height:1.5;margin:0 0 18px}
+    .controls-list{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:20px 0}
+    .controls-list span{border:1px solid var(--ink);padding:10px 8px;text-align:center;font-size:.75rem;font-weight:700}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .primary,.secondary{border:2px solid var(--ink);padding:12px 18px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;cursor:pointer}
+    .primary{background:var(--lime);color:var(--ink)}
+    .secondary{background:transparent;color:var(--ink)}
+    .jump-button{display:none;position:absolute;right:16px;bottom:16px;z-index:3;width:88px;height:88px;border-radius:50%;border:3px solid var(--ink);background:var(--lime);font-weight:900;text-transform:uppercase;box-shadow:5px 5px 0 var(--ink);touch-action:none}
+    .game-message{position:absolute;left:50%;top:18px;transform:translateX(-50%);z-index:2;background:var(--ink);color:var(--cream);padding:8px 14px;font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;opacity:0;transition:opacity .2s;pointer-events:none}
+    .game-message.show{opacity:1}
+    .progress{height:8px;background:rgba(245,242,232,.2);overflow:hidden}
+    .progress span{display:block;width:0;height:100%;background:var(--lime);transition:width .16s linear}
+    .below{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:32px;border-top:1px solid var(--line);padding-top:24px}
+    .below h2{font-size:clamp(1.5rem,3vw,2.6rem);text-transform:uppercase;letter-spacing:-.04em;margin:0 0 10px}
+    .below p{line-height:1.55;margin:0}
+    .links{display:flex;gap:12px;align-items:flex-start;justify-content:flex-end;flex-wrap:wrap}
+    .links a{border:1px solid var(--ink);padding:11px 14px;text-decoration:none;text-transform:uppercase;font-size:.72rem;font-weight:800}
+    .status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    footer{padding:18px clamp(18px,4vw,64px);border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}
+    @media(max-width:760px){
+      .site-header{align-items:flex-start}.site-header nav{gap:10px;font-size:.66rem}
+      main{padding-top:26px}.intro{grid-template-columns:1fr}.intro-copy{max-width:100%}
+      h1{font-size:clamp(3.5rem,21vw,6.8rem)}
+      .game-topbar{align-items:flex-start}.hud-group{gap:10px}
+      .jump-button{display:block}.controls-list{grid-template-columns:1fr}
+      .below{grid-template-columns:1fr}.links{justify-content:flex-start}
+    }
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.game-shell{box-shadow:none}}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="wordmark" href="index.html">Halimah Alossaimi</a>
+    <nav aria-label="Primary navigation">
+      <a href="index.html">Portfolio</a>
+      <a href="same-street-proposal.html">Week 1 Proposal</a>
+      <a aria-current="page" href="same-street-game.html">Play Game</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div>
+        <p class="eyebrow">Hallucination · Week 2 playable draft</p>
+        <h1>Same<br><span>Street</span></h1>
+      </div>
+      <p class="intro-copy">Run through the same village from two sides of the chase. The controls stay familiar, but the world changes from panic to attack mode depending on who you become.</p>
+    </section>
+
+    <section class="game-shell" aria-label="Same Street game">
+      <div class="game-topbar">
+        <div class="hud-group">
+          <span>Role: <b class="hud-value" id="role">Human</b></span>
+          <span>Goal: <b class="hud-value" id="goal">Escape</b></span>
+          <span>Lives: <b class="hud-value" id="lives">● ● ●</b></span>
+        </div>
+        <button class="sound-button" id="sound" type="button" aria-pressed="false">Sound: On</button>
+      </div>
+      <div class="progress" aria-hidden="true"><span id="progress"></span></div>
+      <div class="stage" id="stage">
+        <canvas id="game" width="960" height="540" aria-label="Side-scrolling runner game. Press Space, click, or tap to jump."></canvas>
+        <div class="game-message" id="message"></div>
+        <button class="jump-button" id="jump" type="button">Jump</button>
+        <div class="screen" id="screen">
+          <div class="card">
+            <span class="loop-label" id="card-label">Loop 01 · Human</span>
+            <h2 id="card-title">Run from them</h2>
+            <p id="card-copy">The village looks friendly, but something is following you. Jump over obstacles and survive long enough to reach the edge of town.</p>
+            <div class="controls-list">
+              <span>Space = Jump</span><span>Click = Jump</span><span>Tap = Jump</span>
+            </div>
+            <div class="actions" id="actions"><button class="primary" id="start" type="button">Start the run</button></div>
+          </div>
+        </div>
+        <p class="status" id="status" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <section class="below">
+      <div>
+        <p class="eyebrow">Testing focus</p>
+        <h2>Does the same street feel different?</h2>
+        <p>This first draft tests the main jump action, fast restarts, role reversal, and the emotional shift between escaping and chasing. Visuals, sound, pacing, and difficulty will be refined with feedback in Week 3.</p>
+      </div>
+      <div class="links">
+        <a href="same-street-proposal.html">Read the proposal ↗</a>
+        <a href="index.html#work">Back to portfolio ↗</a>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>Game by Halimah Alossaimi · 2026</span><span>Work in progress</span></footer>
+
+  <script>
+  (function(){
+    'use strict';
+    var canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
+    var screen=document.getElementById('screen'),start=document.getElementById('start');
+    var label=document.getElementById('card-label'),title=document.getElementById('card-title'),copy=document.getElementById('card-copy'),actions=document.getElementById('actions');
+    var roleEl=document.getElementById('role'),goalEl=document.getElementById('goal'),livesEl=document.getElementById('lives'),progressEl=document.getElementById('progress');
+    var message=document.getElementById('message'),status=document.getElementById('status'),soundBtn=document.getElementById('sound');
+    var W=960,H=540,ground=418,state='intro',mode='human',muted=false,last=0,elapsed=0,road=0,spawn=0,progress=0,shake=0,flash=0;
+    var duration={human:20,zombie:18,glitch:14};
+    var player={x:175,y:ground-58,w:34,h:58,vy:0,onGround:true,lives:3};
+    var obstacles=[],particles=[],audio=null;
+
+    function setCard(kind){
+      screen.hidden=false;
+      actions.innerHTML='';
+      var btn=document.createElement('button');btn.className='primary';
+      if(kind==='zombie'){
+        label.textContent='Loop 02 · Zombie';title.textContent='Now chase them';
+        copy.textContent='You return to the same starting point as the zombie. The street is brighter, the camera feels stronger, and the human ahead is your target.';
+        btn.textContent='Start zombie loop';btn.onclick=function(){begin('zombie')};
+      }else if(kind==='glitch'){
+        label.textContent='Loop 03 · Unstable';title.textContent='Who is running?';
+        copy.textContent='Both versions of the street begin to overlap. Your role will switch during the run. Keep moving until you reach the pond.';
+        btn.textContent='Enter final loop';btn.onclick=function(){begin('glitch')};
+      }else if(kind==='ending'){
+        label.textContent='The pond · Ending';title.textContent='Who was the monster?';
+        copy.textContent='The two reflections overlap. The street did not change as much as your point of view did.';
+        btn.textContent='Run again';btn.onclick=function(){begin('human')};
+        var stop=document.createElement('button');stop.className='secondary';stop.textContent='Stop the loop';
+        stop.onclick=function(){title.textContent='The loop is quiet';copy.textContent='You stop running. For the first time, the street stays still.';actions.innerHTML='';var again=document.createElement('button');again.className='primary';again.textContent='Play again';again.onclick=function(){begin('human')};actions.appendChild(again)};
+        actions.appendChild(btn);actions.appendChild(stop);return;
+      }else{
+        label.textContent='Loop 01 · Human';title.textContent='Run from them';
+        copy.textContent='The village looks friendly, but something is following you. Jump over obstacles and survive long enough to reach the edge of town.';
+        btn.textContent='Start the run';btn.onclick=function(){begin('human')};
+      }
+      actions.appendChild(btn);
+    }
+
+    function begin(next){
+      mode=next;state='playing';screen.hidden=true;elapsed=0;road=0;spawn=.8;progress=0;obstacles=[];particles=[];player.y=ground-player.h;player.vy=0;player.onGround=true;player.lives=3;updateHUD();announce(next==='human'?'Human loop started. Escape the zombies.':next==='zombie'?'Zombie loop started. Chase the human.':'Final loop started. Your role will keep changing.');tone(220,.08,'sine');
+    }
+
+    function updateHUD(){
+      var visibleMode=mode;
+      if(mode==='glitch') visibleMode=Math.floor(elapsed/2.4)%2===0?'human':'zombie';
+      roleEl.textContent=visibleMode==='human'?'Human':'Zombie';
+      goalEl.textContent=mode==='glitch'?'Keep moving':visibleMode==='human'?'Escape':'Catch them';
+      livesEl.textContent=Array(player.lives+1).join('● ');
+      progressEl.style.width=Math.min(100,(mode==='zombie'?progress:elapsed/duration[mode]*100))+'%';
+    }
+
+    function announce(text){status.textContent=text;message.textContent=text;message.classList.add('show');clearTimeout(announce.timer);announce.timer=setTimeout(function(){message.classList.remove('show')},1200)}
+
+    function jump(){
+      if(state!=='playing'||!player.onGround)return;
+      player.vy=-690;player.onGround=false;tone(mode==='zombie'?150:310,.06,'square');
+      for(var i=0;i<7;i++)particles.push({x:player.x+12,y:ground-4,vx:-40-Math.random()*80,vy:-30-Math.random()*80,life:.5});
+    }
+
+    function hit(ob){
+      if(ob.hit)return;ob.hit=true;player.lives--;shake=10;flash=.16;tone(72,.16,'sawtooth');
+      if(mode==='zombie')progress=Math.max(0,progress-12);
+      announce(player.lives>0?'Obstacle hit. Keep moving.':'The street resets.');
+      if(player.lives<=0)setTimeout(function(){begin(mode)},650);
+      updateHUD();
+    }
+
+    function finish(){
+      state='between';tone(520,.12,'sine');setTimeout(function(){
+        if(mode==='human')setCard('zombie');else if(mode==='zombie')setCard('glitch');else setCard('ending');
+      },350);
+    }
+
+    function tone(freq,len,type){
+      if(muted)return;
+      try{
+        audio=audio||new (window.AudioContext||window.webkitAudioContext)();
+        var o=audio.createOscillator(),g=audio.createGain();o.type=type||'sine';o.frequency.value=freq;g.gain.setValueAtTime(.035,audio.currentTime);g.gain.exponentialRampToValueAtTime(.001,audio.currentTime+len);o.connect(g);g.connect(audio.destination);o.start();o.stop(audio.currentTime+len);
+      }catch(e){}
+    }
+
+    function spawnObstacle(){
+      var types=['fence','sign','barrel'];var type=types[Math.floor(Math.random()*types.length)];
+      obstacles.push({x:W+20,y:ground-(type==='sign'?62:type==='fence'?50:42),w:type==='sign'?30:type==='fence'?54:38,h:type==='sign'?62:type==='fence'?50:42,type:type,hit:false});
+    }
+
+    function update(dt){
+      if(state!=='playing')return;
+      elapsed+=dt;road+=dt*(mode==='human'?330:mode==='zombie'?365:390);spawn-=dt;
+      if(spawn<=0){spawnObstacle();spawn=1.35+Math.random()*.75}
+      player.vy+=1800*dt;player.y+=player.vy*dt;
+      if(player.y>=ground-player.h){player.y=ground-player.h;player.vy=0;player.onGround=true}
+      var speed=mode==='human'?330:mode==='zombie'?365:390;
+      for(var i=obstacles.length-1;i>=0;i--){
+        var o=obstacles[i];o.x-=speed*dt;
+        if(o.x+o.w<0){obstacles.splice(i,1);continue}
+        if(!o.hit&&player.x<o.x+o.w&&player.x+player.w>o.x&&player.y<o.y+o.h&&player.y+player.h>o.y)hit(o);
+      }
+      for(i=particles.length-1;i>=0;i--){var p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=180*dt;p.life-=dt;if(p.life<=0)particles.splice(i,1)}
+      if(mode==='zombie')progress+=dt*100/duration.zombie;
+      if(shake>0)shake=Math.max(0,shake-dt*40);if(flash>0)flash-=dt;
+      updateHUD();
+      if((mode==='zombie'&&progress>=100)||(mode!=='zombie'&&elapsed>=duration[mode]))finish();
+    }
+
+    function palette(){
+      var m=mode;if(mode==='glitch')m=Math.floor(elapsed/2.4)%2===0?'human':'zombie';
+      return m==='human'?{sky:'#f4b58e',far:'#d88983',near:'#6f6b86',ground:'#302f46',accent:'#f7e4c9',role:'human'}:{sky:'#9bd35b',far:'#7151a4',near:'#ff704d',ground:'#24173d',accent:'#fff06a',role:'zombie'};
+    }
+
+    function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(x,y,w,h)}
+    function circle(x,y,r,c){ctx.fillStyle=c;ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fill()}
+
+    function drawVillage(p){
+      rect(0,0,W,H,p.sky);
+      circle(785,82,42,p.accent);
+      var farOff=-(road*.12%240);
+      for(var i=-1;i<6;i++){
+        var fx=i*240+farOff;rect(fx,160,150,150,p.far);ctx.fillStyle=p.far;ctx.beginPath();ctx.moveTo(fx-15,160);ctx.lineTo(fx+75,96);ctx.lineTo(fx+165,160);ctx.fill();
+        rect(fx+30,210,28,45,p.accent);rect(fx+92,198,30,28,p.accent);
+      }
+      var nearOff=-(road*.3%310);
+      for(i=-1;i<5;i++){
+        var nx=i*310+nearOff;rect(nx,285,105,96,p.near);ctx.fillStyle=p.near;ctx.beginPath();ctx.moveTo(nx-12,285);ctx.lineTo(nx+52,236);ctx.lineTo(nx+117,285);ctx.fill();
+        circle(nx+172,314,32,p.near);rect(nx+166,314,12,62,p.near);
+        rect(nx+18,320,22,40,p.accent);rect(nx+62,308,24,22,p.accent);
+      }
+      rect(0,ground,W,H-ground,p.ground);
+      rect(0,ground-8,W,8,p.accent);
+      ctx.strokeStyle=p.accent;ctx.lineWidth=3;ctx.globalAlpha=.35;
+      var lineOff=-(road%80);for(i=-1;i<14;i++){ctx.beginPath();ctx.moveTo(i*80+lineOff,472);ctx.lineTo(i*80+34+lineOff,472);ctx.stroke()}ctx.globalAlpha=1;
+    }
+
+    function drawCharacter(x,y,kind,scale,alpha){
+      ctx.save();ctx.globalAlpha=alpha==null?1:alpha;ctx.translate(x,y);ctx.scale(scale||1,scale||1);
+      var zombie=kind==='zombie',body=zombie?'#8bd255':'#f7e4c9',dark=zombie?'#392551':'#263b56';
+      circle(17,12,11,body);rect(8,22,20,26,dark);
+      ctx.strokeStyle=body;ctx.lineWidth=7;ctx.lineCap='round';
+      ctx.beginPath();ctx.moveTo(10,29);ctx.lineTo(zombie?-5:0,38);ctx.moveTo(27,29);ctx.lineTo(zombie?43:36,22);ctx.stroke();
+      var swing=Math.sin(road*.06)*8;ctx.strokeStyle=dark;ctx.beginPath();ctx.moveTo(13,47);ctx.lineTo(7+swing,62);ctx.moveTo(24,47);ctx.lineTo(31-swing,62);ctx.stroke();
+      if(zombie){rect(5,4,5,4,'#ff704d');rect(24,4,5,4,'#ff704d')}
+      ctx.restore();
+    }
+
+    function drawObstacle(o,p){
+      ctx.save();ctx.globalAlpha=o.hit?.35:1;
+      if(o.type==='fence'){rect(o.x,o.y,o.w,o.h,p.accent);rect(o.x+8,o.y-10,7,o.h+10,p.accent);rect(o.x+38,o.y-10,7,o.h+10,p.accent)}
+      else if(o.type==='sign'){rect(o.x+11,o.y+18,8,44,p.accent);rect(o.x,o.y,30,25,p.near);ctx.fillStyle=p.accent;ctx.font='bold 14px Arial';ctx.fillText('?',10+o.x,o.y+18)}
+      else{rect(o.x,o.y,o.w,o.h,p.near);ctx.strokeStyle=p.accent;ctx.lineWidth=3;ctx.strokeRect(o.x+4,o.y+4,o.w-8,o.h-8)}
+      ctx.restore();
+    }
+
+    function draw(){
+      var p=palette();ctx.save();
+      if(shake&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches)ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);
+      drawVillage(p);
+      var current=p.role;
+      if(mode==='human'){
+        drawCharacter(50,ground-55,'zombie',.9,.85);drawCharacter(90,ground-55,'zombie',.82,.55);
+      }else if(mode==='zombie'){
+        var targetX=760-Math.min(420,progress*4.2);drawCharacter(targetX,ground-58,'human',1,.92);
+      }else{
+        drawCharacter(70,ground-55,current==='human'?'zombie':'human',.9,.7);
+        drawCharacter(700,ground-55,current==='human'?'human':'zombie',.9,.55);
+      }
+      for(var i=0;i<obstacles.length;i++)drawObstacle(obstacles[i],p);
+      drawCharacter(player.x,player.y,current,1,1);
+      for(i=0;i<particles.length;i++)circle(particles[i].x,particles[i].y,3,p.accent);
+      if(mode==='glitch'&&state==='playing'){
+        ctx.globalAlpha=.15+Math.random()*.12;for(i=0;i<5;i++)rect(0,Math.random()*H,W,4+Math.random()*10,i%2?p.near:p.accent);ctx.globalAlpha=1;
+      }
+      if(flash>0){ctx.globalAlpha=flash*2;rect(0,0,W,H,'#ffffff');ctx.globalAlpha=1}
+      ctx.restore();
+    }
+
+    function loop(t){var dt=Math.min(.033,(t-last)/1000||0);last=t;update(dt);draw();requestAnimationFrame(loop)}
+    window.addEventListener('keydown',function(e){if(e.code==='Space'||e.code==='ArrowUp'){e.preventDefault();jump()}});
+    canvas.addEventListener('pointerdown',jump);document.getElementById('jump').addEventListener('pointerdown',function(e){e.preventDefault();jump()});
+    soundBtn.addEventListener('click',function(){muted=!muted;soundBtn.textContent='Sound: '+(muted?'Off':'On');soundBtn.setAttribute('aria-pressed',muted?'true':'false');if(!muted)tone(440,.06,'sine')});
+    setCard('intro');requestAnimationFrame(loop);
+  })();
+  </script>
+</body>
+</html>
