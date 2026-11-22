@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Play Same Street, a cozy-horror looping runner by Halimah Alossaimi.">
-  <title>Same Street — Playable Game Draft</title>
+  <title>Same Street — Final Hallucination Game</title>
   <style>
     :root{--ink:#10120f;--sage:#c2cabb;--lime:#d8ff52;--cream:#f5f2e8;--line:rgba(16,18,15,.28)}
     *{box-sizing:border-box}
@@ -51,10 +51,20 @@
     .pause-card p{margin:0 0 16px}
     .progress{height:8px;background:rgba(245,242,232,.2);overflow:hidden}
     .progress span{display:block;width:0;height:100%;background:var(--lime);transition:width .16s linear}
-    .below{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:32px;border-top:1px solid var(--line);padding-top:24px}
-    .below h2{font-size:clamp(1.5rem,3vw,2.6rem);text-transform:uppercase;letter-spacing:-.04em;margin:0 0 10px}
-    .below p{line-height:1.55;margin:0}
-    .links{display:flex;gap:12px;align-items:flex-start;justify-content:flex-end;flex-wrap:wrap}
+    .quick-rule{margin:-6px 0 18px!important;padding:8px 10px;border-left:5px solid var(--lime);background:rgba(16,18,15,.08);font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+    .process-note{margin-top:36px;border-top:1px solid var(--line);padding-top:28px}
+    .process-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,420px);gap:24px;align-items:end;margin-bottom:20px}
+    .process-head h2{font-size:clamp(2rem,5vw,4.4rem);line-height:.9;text-transform:uppercase;letter-spacing:-.055em;margin:0}
+    .process-head>p{line-height:1.55;margin:0}
+    .process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .process-card{border:1px solid var(--ink);padding:18px;background:rgba(245,242,232,.32)}
+    .process-card h3{margin:6px 0 9px;font-size:1.15rem;text-transform:uppercase}
+    .process-card p{line-height:1.5;margin:0}
+    .revision-strip{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+    .revision-strip article{padding:16px;border:1px solid var(--line)}
+    .revision-strip strong{display:block;text-transform:uppercase;font-size:.72rem;letter-spacing:.1em;margin-bottom:7px}
+    .revision-strip p{margin:0;line-height:1.45}
+    .links{display:flex;gap:12px;align-items:flex-start;justify-content:flex-end;flex-wrap:wrap;margin-top:18px}
     .links a{border:1px solid var(--ink);padding:11px 14px;text-decoration:none;text-transform:uppercase;font-size:.72rem;font-weight:800}
     .status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
     footer{padding:18px clamp(18px,4vw,64px);border-top:1px solid var(--line);display:flex;justify-content:space-between;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}
@@ -64,7 +74,7 @@
       h1{font-size:clamp(3.5rem,21vw,6.8rem)}
       .game-topbar{align-items:flex-start}.hud-group{gap:10px}
       .jump-button{display:block}.controls-list{grid-template-columns:1fr}
-      .below{grid-template-columns:1fr}.links{justify-content:flex-start}
+      .process-head,.process-grid,.revision-strip{grid-template-columns:1fr}.links{justify-content:flex-start}
     }
     @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.game-shell{box-shadow:none}}
   </style>
@@ -82,7 +92,7 @@
   <main>
     <section class="intro">
       <div>
-        <p class="eyebrow">Hallucination · Week 2 playable draft</p>
+        <p class="eyebrow">Hallucination · Final game</p>
         <h1>Same<br><span>Street</span></h1>
       </div>
       <p class="intro-copy">Run through the same village from two sides of the chase. The controls stay familiar, but the world changes from panic to attack mode depending on who you become.</p>
@@ -122,7 +132,8 @@
           <div class="card">
             <span class="loop-label" id="card-label">Loop 01 · Human</span>
             <h2 id="card-title">Run from them</h2>
-            <p id="card-copy">The village looks friendly, but something is following you. Jump over obstacles and survive long enough to reach the edge of town.</p>
+            <p id="card-copy">The village looks friendly, but something is following you. Jump over obstacles and keep moving until the loop ends.</p>
+            <p class="quick-rule">Three lives · +10 points for each obstacle cleared</p>
             <div class="controls-list">
               <span>Space = Jump</span><span>Click = Jump</span><span>Tap = Jump</span><span>P = Pause</span>
             </div>
@@ -133,20 +144,43 @@
       </div>
     </section>
 
-    <section class="below">
-      <div>
-        <p class="eyebrow">Testing focus</p>
-        <h2>Does the same street feel different?</h2>
-        <p>This first draft tests the main jump action, fast restarts, role reversal, and the emotional shift between escaping and chasing. Visuals, sound, pacing, and difficulty will be refined with feedback in Week 3.</p>
+    <section class="process-note" id="process">
+      <div class="process-head">
+        <div>
+          <p class="eyebrow">Week 3 · Testing and revision</p>
+          <h2>What changed</h2>
+        </div>
+        <p>I focused on helping a new player understand the controls, see their progress, and feel a stronger difference between escaping as the human and chasing as the zombie.</p>
+      </div>
+      <div class="process-grid">
+        <article class="process-card">
+          <p class="eyebrow">Feedback + observations</p>
+          <h3>Make each loop easier to read</h3>
+          <p>Testing showed that players needed clearer progress, stronger role changes, and more obvious instructions before beginning.</p>
+        </article>
+        <article class="process-card">
+          <p class="eyebrow">Changes made</p>
+          <h3>Clearer play and stronger mood</h3>
+          <p>I added loop, score, lives, progress, pause, restart, collision feedback, shorter stages, distinct sound patterns, and a higher-contrast zombie palette.</p>
+        </article>
+        <article class="process-card">
+          <p class="eyebrow">AI + my decisions</p>
+          <h3>Built with Codex, directed by me</h3>
+          <p>Codex helped write and test the HTML, CSS, JavaScript, sound system, and publishing updates. I chose the story, role reversal, visual direction, pacing, feedback priorities, and final ending.</p>
+        </article>
+      </div>
+      <div class="revision-strip" aria-label="Before and after comparison">
+        <article><strong>First draft</strong><p>The jump worked, but progress and role changes were less visible, and both modes felt too similar.</p></article>
+        <article><strong>Final version</strong><p>Three guided loops now move from panic to attack mode to uncertainty, followed by a clear ending choice.</p></article>
       </div>
       <div class="links">
-        <a href="same-street-proposal.html">Read the proposal ↗</a>
+        <a href="same-street-proposal.html">Read the Week 1 proposal ↗</a>
         <a href="index.html#work">Back to portfolio ↗</a>
       </div>
     </section>
   </main>
 
-  <footer><span>Game by Halimah Alossaimi · 2026</span><span>Work in progress</span></footer>
+  <footer><span>Game by Halimah Alossaimi · 2026</span><span>Final Hallucination game</span></footer>
 
   <script>
   (function(){
@@ -168,11 +202,11 @@
       var btn=document.createElement('button');btn.className='primary';
       if(kind==='zombie'){
         label.textContent='Loop 02 · Zombie';title.textContent='Now chase them';
-        copy.textContent='You return to the same starting point as the zombie. The street is brighter, the camera feels stronger, and the human ahead is your target.';
+        copy.textContent='You return as the zombie. Clear obstacles while the progress bar closes the distance to the human. The controls stay the same, but the mood and goal change.';
         btn.textContent='Start zombie loop';btn.onclick=function(){begin('zombie')};
       }else if(kind==='glitch'){
         label.textContent='Loop 03 · Unstable';title.textContent='Who is running?';
-        copy.textContent='Both versions of the street begin to overlap. Your role will switch during the run. Keep moving until you reach the pond.';
+        copy.textContent='Both versions overlap and your role switches every few seconds. Keep jumping through the changing street until you reach the pond.';
         btn.textContent='Enter final loop';btn.onclick=function(){begin('glitch')};
       }else if(kind==='ending'){
         label.textContent='The pond · Ending';title.textContent='Who was the monster?';
@@ -183,7 +217,7 @@
         actions.appendChild(btn);actions.appendChild(stop);return;
       }else{
         label.textContent='Loop 01 · Human';title.textContent='Run from them';
-        copy.textContent='The village looks friendly, but something is following you. Jump over obstacles and survive long enough to reach the edge of town.';
+        copy.textContent='The village looks friendly, but something is following you. Jump over obstacles and keep moving until the loop ends. Each clean obstacle adds 10 points.';
         btn.textContent='Start the run';btn.onclick=function(){begin('human')};
       }
       actions.appendChild(btn);
