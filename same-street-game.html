@@ -44,6 +44,14 @@
     .jump-button{display:none;position:absolute;right:16px;bottom:16px;z-index:3;width:88px;height:88px;border-radius:50%;border:3px solid var(--ink);background:var(--lime);font-weight:900;text-transform:uppercase;box-shadow:5px 5px 0 var(--ink);touch-action:none}
     .game-message{position:absolute;left:50%;top:18px;transform:translateX(-50%);z-index:2;background:var(--ink);color:var(--cream);padding:8px 14px;font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;opacity:0;transition:opacity .2s;pointer-events:none}
     .game-message.show{opacity:1}
+    .chase-meter{position:absolute;left:50%;top:16px;transform:translateX(-50%);z-index:3;width:min(440px,calc(100% - 32px));padding:9px 12px;background:rgba(16,18,15,.9);color:var(--cream);border:1px solid var(--lime);pointer-events:none}
+    .chase-meter[hidden]{display:none}
+    .chase-label{display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:.66rem;text-transform:uppercase;letter-spacing:.08em}
+    .chase-label strong{color:var(--lime)}
+    .chase-track{position:relative;height:9px;margin-top:7px;background:rgba(245,242,232,.22);overflow:visible}
+    .chase-fill{display:block;height:100%;width:0;background:var(--lime)}
+    .chase-dot{position:absolute;top:50%;width:21px;height:21px;border:2px solid var(--ink);border-radius:50%;display:grid;place-items:center;transform:translate(-50%,-50%);font-size:.6rem;font-weight:900}
+    .zombie-dot{left:0;background:#8bd255}.human-dot{left:100%;background:var(--cream)}
     .pause-panel{position:absolute;inset:0;z-index:5;display:grid;place-items:center;background:rgba(16,18,15,.6);backdrop-filter:blur(5px);padding:20px}
     .pause-panel[hidden]{display:none}
     .pause-card{background:var(--cream);border:2px solid var(--ink);padding:24px;text-align:center;box-shadow:8px 8px 0 var(--lime)}
@@ -105,6 +113,7 @@
           <span>Role: <b class="hud-value" id="role">Human</b></span>
           <span>Goal: <b class="hud-value" id="goal">Escape</b></span>
           <span>Score: <b class="hud-value" id="score">0</b></span>
+          <span>Fragments: <b class="hud-value" id="fragments">0</b></span>
           <span>Lives: <b class="hud-value" id="lives">● ● ●</b></span>
         </div>
         <div class="hud-group">
@@ -117,6 +126,10 @@
       <div class="stage" id="stage">
         <canvas id="game" width="960" height="540" aria-label="Side-scrolling runner game. Press Space, click, or tap to jump."></canvas>
         <div class="game-message" id="message"></div>
+        <div class="chase-meter" id="chase-meter" hidden aria-live="polite">
+          <div class="chase-label"><span>Zombie</span><strong id="chase-distance">90 m to target</strong><span>Human</span></div>
+          <div class="chase-track"><span class="chase-fill" id="chase-fill"></span><i class="chase-dot zombie-dot">Z</i><i class="chase-dot human-dot">H</i></div>
+        </div>
         <div class="pause-panel" id="pause-panel" hidden>
           <div class="pause-card">
             <h2>Game paused</h2>
@@ -132,8 +145,8 @@
           <div class="card">
             <span class="loop-label" id="card-label">Loop 01 · Human</span>
             <h2 id="card-title">Run from them</h2>
-            <p id="card-copy">The village looks friendly, but something is following you. Jump over obstacles and keep moving until the loop ends.</p>
-            <p class="quick-rule">Three lives · +10 points for each obstacle cleared</p>
+            <p id="card-copy">Fences, signs, and barrels are obstacles. Jump over them and keep moving until the loop ends.</p>
+            <p class="quick-rule">Obstacles = danger · Glowing fragments = +25 points</p>
             <div class="controls-list">
               <span>Space = Jump</span><span>Click = Jump</span><span>Tap = Jump</span><span>P = Pause</span>
             </div>
@@ -156,12 +169,12 @@
         <article class="process-card">
           <p class="eyebrow">Feedback + observations</p>
           <h3>Make each loop easier to read</h3>
-          <p>Testing showed that players needed clearer progress, stronger role changes, and more obvious instructions before beginning.</p>
+          <p>Anwesha understood the role change but was unsure how close the zombie was to the human. Christopher said the obstacles were unclear before collision and suggested adding collectibles.</p>
         </article>
         <article class="process-card">
           <p class="eyebrow">Changes made</p>
           <h3>Clearer play and stronger mood</h3>
-          <p>I added loop, score, lives, progress, pause, restart, collision feedback, shorter stages, distinct sound patterns, and a higher-contrast zombie palette.</p>
+          <p>I added a labeled chase-distance meter, stronger obstacle outlines and early “JUMP” cues, plus glowing memory fragments that award 25 points.</p>
         </article>
         <article class="process-card">
           <p class="eyebrow">AI + my decisions</p>
@@ -170,8 +183,8 @@
         </article>
       </div>
       <div class="revision-strip" aria-label="Before and after comparison">
-        <article><strong>First draft</strong><p>The jump worked, but progress and role changes were less visible, and both modes felt too similar.</p></article>
-        <article><strong>Final version</strong><p>Three guided loops now move from panic to attack mode to uncertainty, followed by a clear ending choice.</p></article>
+        <article><strong>First draft</strong><p>The chase progress was unlabeled, obstacles blended into the scenery, and jumping only avoided hazards.</p></article>
+        <article><strong>Final version</strong><p>The zombie loop shows distance to the target, hazards are marked clearly, and memory fragments reward active jumping.</p></article>
       </div>
       <div class="links">
         <a href="same-street-proposal.html">Read the Week 1 proposal ↗</a>
@@ -188,13 +201,14 @@
     var canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
     var screen=document.getElementById('screen'),start=document.getElementById('start');
     var label=document.getElementById('card-label'),title=document.getElementById('card-title'),copy=document.getElementById('card-copy'),actions=document.getElementById('actions');
-    var roleEl=document.getElementById('role'),goalEl=document.getElementById('goal'),livesEl=document.getElementById('lives'),progressEl=document.getElementById('progress'),loopEl=document.getElementById('loop-count'),scoreEl=document.getElementById('score');
+    var roleEl=document.getElementById('role'),goalEl=document.getElementById('goal'),livesEl=document.getElementById('lives'),progressEl=document.getElementById('progress'),loopEl=document.getElementById('loop-count'),scoreEl=document.getElementById('score'),fragmentsEl=document.getElementById('fragments');
+    var chaseMeter=document.getElementById('chase-meter'),chaseDistance=document.getElementById('chase-distance'),chaseFill=document.getElementById('chase-fill');
     var message=document.getElementById('message'),status=document.getElementById('status'),soundBtn=document.getElementById('sound'),pauseBtn=document.getElementById('pause'),restartBtn=document.getElementById('restart');
     var pausePanel=document.getElementById('pause-panel'),resumeBtn=document.getElementById('resume'),pauseRestartBtn=document.getElementById('pause-restart');
-    var W=960,H=540,ground=418,state='intro',mode='human',muted=false,last=0,elapsed=0,road=0,spawn=0,progress=0,score=0,shake=0,flash=0;
+    var W=960,H=540,ground=418,state='intro',mode='human',muted=false,last=0,elapsed=0,road=0,spawn=0,collectSpawn=0,progress=0,score=0,fragments=0,obstacleCount=0,shake=0,flash=0;
     var duration={human:15,zombie:14,glitch:10};
     var player={x:175,y:ground-58,w:34,h:58,vy:0,onGround:true,lives:3};
-    var obstacles=[],particles=[],audio=null,musicTimer=null,musicStep=0;
+    var obstacles=[],collectibles=[],particles=[],audio=null,musicTimer=null,musicStep=0;
 
     function setCard(kind){
       screen.hidden=false;
@@ -202,7 +216,7 @@
       var btn=document.createElement('button');btn.className='primary';
       if(kind==='zombie'){
         label.textContent='Loop 02 · Zombie';title.textContent='Now chase them';
-        copy.textContent='You return as the zombie. Clear obstacles while the progress bar closes the distance to the human. The controls stay the same, but the mood and goal change.';
+        copy.textContent='You return as the zombie. Watch the labeled chase meter as the distance to the human closes. Jump over marked hazards and collect glowing memory fragments.';
         btn.textContent='Start zombie loop';btn.onclick=function(){begin('zombie')};
       }else if(kind==='glitch'){
         label.textContent='Loop 03 · Unstable';title.textContent='Who is running?';
@@ -217,15 +231,15 @@
         actions.appendChild(btn);actions.appendChild(stop);return;
       }else{
         label.textContent='Loop 01 · Human';title.textContent='Run from them';
-        copy.textContent='The village looks friendly, but something is following you. Jump over obstacles and keep moving until the loop ends. Each clean obstacle adds 10 points.';
+        copy.textContent='Fences, signs, and barrels are marked hazards. Jump over them and collect glowing memory fragments for 25 points.';
         btn.textContent='Start the run';btn.onclick=function(){begin('human')};
       }
       actions.appendChild(btn);
     }
 
     function begin(next){
-      if(next==='human')score=0;
-      mode=next;state='playing';screen.hidden=true;pausePanel.hidden=true;pauseBtn.textContent='Pause';elapsed=0;road=0;spawn=.8;progress=0;obstacles=[];particles=[];player.y=ground-player.h;player.vy=0;player.onGround=true;player.lives=3;last=performance.now();updateHUD();announce(next==='human'?'Human loop started. Escape the zombies.':next==='zombie'?'Zombie loop started. Chase the human.':'Final loop started. Your role will keep changing.');tone(220,.08,'sine',.035);startMusic();
+      if(next==='human'){score=0;fragments=0}
+      mode=next;state='playing';screen.hidden=true;pausePanel.hidden=true;pauseBtn.textContent='Pause';elapsed=0;road=0;spawn=.8;collectSpawn=1.8;progress=0;obstacleCount=0;obstacles=[];collectibles=[];particles=[];player.y=ground-player.h;player.vy=0;player.onGround=true;player.lives=3;last=performance.now();updateHUD();announce(next==='human'?'Human loop started. Escape the zombies.':next==='zombie'?'Zombie loop started. Chase the human.':'Final loop started. Your role will keep changing.');tone(220,.08,'sine',.035);startMusic();
     }
 
     function updateHUD(){
@@ -235,8 +249,15 @@
       roleEl.textContent=visibleMode==='human'?'Human':'Zombie';
       goalEl.textContent=mode==='glitch'?'Keep moving':visibleMode==='human'?'Escape':'Catch them';
       scoreEl.textContent=score;
+      fragmentsEl.textContent=fragments;
       livesEl.textContent=Array(player.lives+1).join('● ');
       progressEl.style.width=Math.min(100,(mode==='zombie'?progress:elapsed/duration[mode]*100))+'%';
+      chaseMeter.hidden=mode!=='zombie';
+      if(mode==='zombie'){
+        var distance=Math.max(0,Math.ceil(90*(1-Math.min(100,progress)/100)));
+        chaseDistance.textContent=distance+' m to target';
+        chaseFill.style.width=Math.min(100,progress)+'%';
+      }
     }
 
     function announce(text){status.textContent=text;message.textContent=text;message.classList.add('show');clearTimeout(announce.timer);announce.timer=setTimeout(function(){message.classList.remove('show')},1200)}
@@ -298,13 +319,26 @@
 
     function spawnObstacle(){
       var types=['fence','sign','barrel'];var type=types[Math.floor(Math.random()*types.length)];
-      obstacles.push({x:W+20,y:ground-(type==='sign'?62:type==='fence'?50:42),w:type==='sign'?30:type==='fence'?54:38,h:type==='sign'?62:type==='fence'?50:42,type:type,hit:false});
+      obstacles.push({x:W+20,y:ground-(type==='sign'?62:type==='fence'?50:42),w:type==='sign'?30:type==='fence'?54:38,h:type==='sign'?62:type==='fence'?50:42,type:type,hit:false,tutorial:obstacleCount<2});
+      obstacleCount++;
+    }
+
+    function spawnCollectible(){
+      var height=Math.random()<.5?92:132;
+      collectibles.push({x:W+30,y:ground-height,w:26,h:26,spin:Math.random()*Math.PI*2});
+    }
+
+    function collect(item){
+      score+=25;fragments++;tone(660,.08,'sine',.03);tone(880,.12,'triangle',.018);
+      for(var i=0;i<10;i++)particles.push({x:item.x+13,y:item.y+13,vx:(Math.random()-.5)*180,vy:-40-Math.random()*130,life:.6});
+      announce('Memory fragment collected. +25 points.');
     }
 
     function update(dt){
       if(state!=='playing')return;
-      elapsed+=dt;road+=dt*(mode==='human'?330:mode==='zombie'?365:390);spawn-=dt;
+      elapsed+=dt;road+=dt*(mode==='human'?330:mode==='zombie'?365:390);spawn-=dt;collectSpawn-=dt;
       if(spawn<=0){spawnObstacle();spawn=1.35+Math.random()*.75}
+      if(collectSpawn<=0){spawnCollectible();collectSpawn=2.4+Math.random()*1.2}
       player.vy+=1800*dt;player.y+=player.vy*dt;
       if(player.y>=ground-player.h){player.y=ground-player.h;player.vy=0;player.onGround=true}
       var speed=mode==='human'?330:mode==='zombie'?365:390;
@@ -312,6 +346,11 @@
         var o=obstacles[i];o.x-=speed*dt;
         if(o.x+o.w<0){if(!o.hit)score+=10;obstacles.splice(i,1);continue}
         if(!o.hit&&player.x<o.x+o.w&&player.x+player.w>o.x&&player.y<o.y+o.h&&player.y+player.h>o.y)hit(o);
+      }
+      for(i=collectibles.length-1;i>=0;i--){
+        var c=collectibles[i];c.x-=speed*dt;c.spin+=dt*4;
+        if(c.x+c.w<0){collectibles.splice(i,1);continue}
+        if(player.x<c.x+c.w&&player.x+player.w>c.x&&player.y<c.y+c.h&&player.y+player.h>c.y){collect(c);collectibles.splice(i,1)}
       }
       for(i=particles.length-1;i>=0;i--){var p=particles[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=180*dt;p.life-=dt;if(p.life<=0)particles.splice(i,1)}
       if(mode==='zombie')progress+=dt*100/duration.zombie;
@@ -362,9 +401,20 @@
     function drawObstacle(o,p){
       ctx.save();ctx.globalAlpha=o.hit?.35:1;
       if(o.type==='fence'){rect(o.x,o.y,o.w,o.h,p.accent);rect(o.x+8,o.y-10,7,o.h+10,p.accent);rect(o.x+38,o.y-10,7,o.h+10,p.accent)}
-      else if(o.type==='sign'){rect(o.x+11,o.y+18,8,44,p.accent);rect(o.x,o.y,30,25,p.near);ctx.fillStyle=p.accent;ctx.font='bold 14px Arial';ctx.fillText('?',10+o.x,o.y+18)}
+      else if(o.type==='sign'){rect(o.x+11,o.y+18,8,44,p.accent);rect(o.x,o.y,30,25,p.near);ctx.fillStyle=p.accent;ctx.font='bold 14px Arial';ctx.fillText('!',11+o.x,o.y+18)}
       else{rect(o.x,o.y,o.w,o.h,p.near);ctx.strokeStyle=p.accent;ctx.lineWidth=3;ctx.strokeRect(o.x+4,o.y+4,o.w-8,o.h-8)}
+      ctx.strokeStyle='#10120f';ctx.lineWidth=4;ctx.strokeRect(o.x-3,o.y-13,o.w+6,o.h+16);
+      ctx.fillStyle='#d8ff52';ctx.fillRect(o.x-3,o.y-13,o.w+6,9);
+      ctx.fillStyle='#10120f';ctx.font='bold 11px Arial';ctx.textAlign='center';ctx.fillText('HAZARD',o.x+o.w/2,o.y-16);
+      if(o.tutorial&&!o.hit){ctx.fillStyle='#10120f';ctx.font='bold 20px Arial';ctx.fillText('JUMP ↑',o.x+o.w/2,o.y-38)}
       ctx.restore();
+    }
+
+    function drawCollectible(c){
+      ctx.save();ctx.translate(c.x+13,c.y+13);ctx.rotate(c.spin);ctx.shadowColor='#d8ff52';ctx.shadowBlur=18;
+      ctx.fillStyle='#d8ff52';ctx.beginPath();ctx.moveTo(0,-14);ctx.lineTo(12,0);ctx.lineTo(0,14);ctx.lineTo(-12,0);ctx.closePath();ctx.fill();
+      ctx.shadowBlur=0;ctx.fillStyle='#10120f';ctx.beginPath();ctx.arc(0,0,4,0,Math.PI*2);ctx.fill();ctx.restore();
+      ctx.fillStyle='#10120f';ctx.font='bold 10px Arial';ctx.textAlign='center';ctx.fillText('MEMORY +25',c.x+13,c.y-10);
     }
 
     function draw(){
@@ -381,6 +431,7 @@
         drawCharacter(700,ground-55,current==='human'?'human':'zombie',.9,.55);
       }
       for(var i=0;i<obstacles.length;i++)drawObstacle(obstacles[i],p);
+      for(i=0;i<collectibles.length;i++)drawCollectible(collectibles[i]);
       drawCharacter(player.x,player.y,current,1,1);
       for(i=0;i<particles.length;i++)circle(particles[i].x,particles[i].y,3,p.accent);
       if(mode==='glitch'&&state==='playing'){
