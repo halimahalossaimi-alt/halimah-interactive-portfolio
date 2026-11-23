@@ -64,7 +64,7 @@
 
   function draw() {
     context.clearRect(0, 0, width, height);
-    const baseRadius = Math.min(width, height) * 0.38;
+    const baseRadius = Math.min(width, height) * 0.56;
     const centerX = width / 2;
     const centerY = height / 2;
     const projected = [];
@@ -75,15 +75,15 @@
       let x = centerX + rotated.x * baseRadius * perspective;
       let y = centerY + rotated.y * baseRadius * perspective;
       const distance = Math.hypot(x - pointerX, y - pointerY);
-      if (hover && distance < 82) {
-        const force = (1 - distance / 82) * 20;
+      if (hover && distance < 128) {
+        const force = (1 - distance / 128) * 52;
         const direction = Math.atan2(y - pointerY, x - pointerX);
         x += Math.cos(direction) * force;
         y += Math.sin(direction) * force;
       }
       if (pulse > 0) {
-        x += rotated.x * pulse * 7;
-        y += rotated.y * pulse * 7;
+        x += rotated.x * pulse * 18;
+        y += rotated.y * pulse * 18;
       }
       projected.push({ x, y, z: rotated.z, seed: point.seed });
     }
