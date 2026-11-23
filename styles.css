@@ -875,7 +875,7 @@ figcaption { color: var(--muted); font-family:"Courier New",monospace; text-tran
 .particle-sphere {
   position: absolute;
   z-index: 0;
-  width: clamp(340px, 52vw, 780px);
+  width: clamp(520px, 68vw, 1080px);
   aspect-ratio: 1;
   left: 51%;
   top: 49%;
@@ -897,10 +897,14 @@ figcaption { color: var(--muted); font-family:"Courier New",monospace; text-tran
 .hero > .eyebrow,
 .hero > .hero-copy {
   z-index: 3;
+  pointer-events: none;
+}
+.hero h1 {
+  pointer-events: none;
 }
 @media (max-width: 780px) {
   .particle-sphere {
-    width: min(92vw, 620px);
+    width: min(118vw, 760px);
     left: 55%;
     opacity: .9;
   }
